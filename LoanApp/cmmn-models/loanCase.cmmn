@@ -1,0 +1,233 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/CMMN/20151109/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:flowable="http://flowable.org/cmmn" xmlns:cmmndi="http://www.omg.org/spec/CMMN/20151109/CMMNDI" xmlns:dc="http://www.omg.org/spec/CMMN/20151109/DC" xmlns:di="http://www.omg.org/spec/CMMN/20151109/DI" xmlns:design="http://flowable.org/design" targetNamespace="http://flowable.org/cmmn">
+  <case id="loanCase" name="Loan case" flowable:initiatorVariableName="initiator" flowable:candidateStarterGroups="flowableUser">
+    <casePlanModel id="onecaseplanmodel1" name="Case plan model" flowable:formKey="getName" flowable:formFieldValidation="false" autoComplete="true">
+      <extensionElements>
+        <flowable:work-form-field-validation><![CDATA[false]]></flowable:work-form-field-validation>
+        <design:stencilid><![CDATA[CasePlanModel]]></design:stencilid>
+      </extensionElements>
+      <planItem id="planItem3" name="Applying for loan" definitionRef="expandedStage1"></planItem>
+      <planItem id="planItem6" name="Managing loan" definitionRef="expandedStage2">
+        <entryCriterion id="entryCriterion1" sentryRef="sentry3"></entryCriterion>
+      </planItem>
+      <planItem id="planItem8" name="Closing loan" definitionRef="expandedStage3">
+        <entryCriterion id="entryCriterion2" sentryRef="sentry4"></entryCriterion>
+      </planItem>
+      <sentry id="sentry3">
+        <extensionElements>
+          <design:stencilid xmlns:design="http://flowable.org/design"><![CDATA[EntryCriterion]]></design:stencilid>
+        </extensionElements>
+        <planItemOnPart id="sentryOnPart3" sourceRef="planItem3">
+          <standardEvent>complete</standardEvent>
+        </planItemOnPart>
+        <ifPart>
+          <condition><![CDATA[${vars:getOrDefault('loanDecision', null) == 'accept'}]]></condition>
+        </ifPart>
+      </sentry>
+      <sentry id="sentry4">
+        <extensionElements>
+          <design:stencilid xmlns:design="http://flowable.org/design"><![CDATA[EntryCriterion]]></design:stencilid>
+        </extensionElements>
+        <planItemOnPart id="sentryOnPart4" sourceRef="planItem6">
+          <standardEvent>complete</standardEvent>
+        </planItemOnPart>
+      </sentry>
+      <sentry id="sentry5">
+        <extensionElements>
+          <design:stencilid xmlns:design="http://flowable.org/design"><![CDATA[ExitCriterion]]></design:stencilid>
+        </extensionElements>
+        <planItemOnPart id="sentryOnPart5" sourceRef="planItem2">
+          <standardEvent>occur</standardEvent>
+        </planItemOnPart>
+      </sentry>
+      <stage id="expandedStage1" name="Applying for loan" autoComplete="true" flowable:includeInStageOverview="true">
+        <extensionElements>
+          <flowable:start-form-field-validation><![CDATA[false]]></flowable:start-form-field-validation>
+          <design:stencilid><![CDATA[ExpandedStage]]></design:stencilid>
+          <design:name_en_us><![CDATA[Applying for loan]]></design:name_en_us>
+        </extensionElements>
+        <planItem id="planItem1" name="Application process" definitionRef="processTask1"></planItem>
+        <planItem id="planItem2" name="Abandon application" definitionRef="userEventListener1"></planItem>
+        <processTask id="processTask1" name="Application process" flowable:fallbackToDefaultTenant="true">
+          <extensionElements>
+            <flowable:start-form-field-validation><![CDATA[false]]></flowable:start-form-field-validation>
+            <design:stencilid><![CDATA[ProcessTask]]></design:stencilid>
+            <design:stencilsuperid><![CDATA[Task]]></design:stencilsuperid>
+            <design:name_en_us><![CDATA[Application process]]></design:name_en_us>
+            <flowable:in source="fullName" target="fullName"></flowable:in>
+            <flowable:out source="loan_outcome" target="loanDecision"></flowable:out>
+          </extensionElements>
+          <processRefExpression><![CDATA[loanApplication]]></processRefExpression>
+        </processTask>
+        <userEventListener id="userEventListener1" name="Abandon application">
+          <extensionElements>
+            <flowable:startformkey><![CDATA[reason]]></flowable:startformkey>
+            <flowable:start-form-field-validation><![CDATA[false]]></flowable:start-form-field-validation>
+            <design:stencilid><![CDATA[UserEventListener]]></design:stencilid>
+            <design:stencilsuperid><![CDATA[EventListener]]></design:stencilsuperid>
+            <design:name_en_us><![CDATA[Abandon application]]></design:name_en_us>
+          </extensionElements>
+        </userEventListener>
+      </stage>
+      <stage id="expandedStage2" name="Managing loan" autoComplete="true" flowable:includeInStageOverview="true">
+        <extensionElements>
+          <flowable:start-form-field-validation><![CDATA[false]]></flowable:start-form-field-validation>
+          <design:stencilid><![CDATA[ExpandedStage]]></design:stencilid>
+          <design:name_en_us><![CDATA[Managing loan]]></design:name_en_us>
+        </extensionElements>
+        <planItem id="planItem4" name="Get repayments" definitionRef="processTask2">
+          <exitCriterion id="exitCriterion5" sentryRef="sentry2"></exitCriterion>
+        </planItem>
+        <planItem id="planItem5" name="Repay early" definitionRef="humanTask1">
+          <itemControl>
+            <manualActivationRule></manualActivationRule>
+          </itemControl>
+          <exitCriterion id="exitCriterion4" sentryRef="sentry1"></exitCriterion>
+        </planItem>
+        <sentry id="sentry2">
+          <extensionElements>
+            <design:stencilid xmlns:design="http://flowable.org/design"><![CDATA[ExitCriterion]]></design:stencilid>
+          </extensionElements>
+          <planItemOnPart id="sentryOnPart1" sourceRef="planItem5">
+            <standardEvent>complete</standardEvent>
+          </planItemOnPart>
+        </sentry>
+        <sentry id="sentry1">
+          <extensionElements>
+            <design:stencilid xmlns:design="http://flowable.org/design"><![CDATA[ExitCriterion]]></design:stencilid>
+          </extensionElements>
+          <planItemOnPart id="sentryOnPart2" sourceRef="planItem4">
+            <standardEvent>complete</standardEvent>
+          </planItemOnPart>
+        </sentry>
+        <processTask id="processTask2" name="Get repayments" flowable:fallbackToDefaultTenant="true">
+          <extensionElements>
+            <flowable:start-form-field-validation><![CDATA[false]]></flowable:start-form-field-validation>
+            <design:stencilid><![CDATA[ProcessTask]]></design:stencilid>
+            <design:stencilsuperid><![CDATA[Task]]></design:stencilsuperid>
+            <design:name_en_us><![CDATA[Get repayments]]></design:name_en_us>
+          </extensionElements>
+          <processRefExpression><![CDATA[getRepayments]]></processRefExpression>
+        </processTask>
+        <humanTask id="humanTask1" name="Repay early" flowable:assignee="${initiator}" flowable:formKey="repaymentDetails" flowable:formFieldValidation="false">
+          <extensionElements>
+            <flowable:start-form-field-validation><![CDATA[false]]></flowable:start-form-field-validation>
+            <design:stencilid><![CDATA[HumanTask]]></design:stencilid>
+            <design:stencilsuperid><![CDATA[Task]]></design:stencilsuperid>
+            <design:name_en_us><![CDATA[Repay early]]></design:name_en_us>
+          </extensionElements>
+        </humanTask>
+      </stage>
+      <stage id="expandedStage3" name="Closing loan" flowable:includeInStageOverview="true">
+        <extensionElements>
+          <flowable:start-form-field-validation><![CDATA[false]]></flowable:start-form-field-validation>
+          <design:stencilid><![CDATA[ExpandedStage]]></design:stencilid>
+          <design:name_en_us><![CDATA[Closing loan]]></design:name_en_us>
+        </extensionElements>
+        <planItem id="planItem7" name="Give closing statement" definitionRef="humanTask2"></planItem>
+        <humanTask id="humanTask2" name="Give closing statement" flowable:assignee="${initiator}" flowable:formFieldValidation="false">
+          <extensionElements>
+            <flowable:start-form-field-validation><![CDATA[false]]></flowable:start-form-field-validation>
+            <design:stencilid><![CDATA[HumanTask]]></design:stencilid>
+            <design:stencilsuperid><![CDATA[Task]]></design:stencilsuperid>
+            <design:name_en_us><![CDATA[Give closing statement]]></design:name_en_us>
+          </extensionElements>
+        </humanTask>
+      </stage>
+      <exitCriterion id="exitCriterion1" sentryRef="sentry5"></exitCriterion>
+    </casePlanModel>
+  </case>
+  <cmmndi:CMMNDI>
+    <cmmndi:CMMNDiagram id="CMMNDiagram_loanCase">
+      <cmmndi:CMMNShape id="CMMNShape_onecaseplanmodel1" cmmnElementRef="onecaseplanmodel1">
+        <dc:Bounds height="735.0" width="785.0" x="30.0" y="45.0"></dc:Bounds>
+        <cmmndi:CMMNLabel></cmmndi:CMMNLabel>
+      </cmmndi:CMMNShape>
+      <cmmndi:CMMNShape id="CMMNShape_exitCriterion1" cmmnElementRef="exitCriterion1">
+        <dc:Bounds height="28.0" width="18.0" x="806.0" y="177.0"></dc:Bounds>
+        <cmmndi:CMMNLabel></cmmndi:CMMNLabel>
+      </cmmndi:CMMNShape>
+      <cmmndi:CMMNShape id="CMMNShape_planItem3" cmmnElementRef="planItem3">
+        <dc:Bounds height="170.0" width="370.0" x="91.0" y="106.0"></dc:Bounds>
+        <cmmndi:CMMNLabel></cmmndi:CMMNLabel>
+      </cmmndi:CMMNShape>
+      <cmmndi:CMMNShape id="CMMNShape_planItem1" cmmnElementRef="planItem1">
+        <dc:Bounds height="80.0" width="100.0" x="121.0" y="151.0"></dc:Bounds>
+        <cmmndi:CMMNLabel></cmmndi:CMMNLabel>
+      </cmmndi:CMMNShape>
+      <cmmndi:CMMNShape id="CMMNShape_planItem2" cmmnElementRef="planItem2">
+        <dc:Bounds height="30.500999999999976" width="30.49799999999999" x="349.75100000000003" y="175.7495"></dc:Bounds>
+        <cmmndi:CMMNLabel></cmmndi:CMMNLabel>
+      </cmmndi:CMMNShape>
+      <cmmndi:CMMNShape id="CMMNShape_planItem6" cmmnElementRef="planItem6">
+        <dc:Bounds height="170.0" width="370.0" x="91.0" y="335.0"></dc:Bounds>
+        <cmmndi:CMMNLabel></cmmndi:CMMNLabel>
+      </cmmndi:CMMNShape>
+      <cmmndi:CMMNShape id="CMMNShape_entryCriterion1" cmmnElementRef="entryCriterion1">
+        <dc:Bounds height="28.0" width="18.0" x="266.0" y="321.0"></dc:Bounds>
+        <cmmndi:CMMNLabel></cmmndi:CMMNLabel>
+      </cmmndi:CMMNShape>
+      <cmmndi:CMMNShape id="CMMNShape_planItem4" cmmnElementRef="planItem4">
+        <dc:Bounds height="80.0" width="100.0" x="120.5" y="380.0"></dc:Bounds>
+        <cmmndi:CMMNLabel></cmmndi:CMMNLabel>
+      </cmmndi:CMMNShape>
+      <cmmndi:CMMNShape id="CMMNShape_exitCriterion5" cmmnElementRef="exitCriterion5">
+        <dc:Bounds height="28.0" width="18.0" x="179.5" y="446.0"></dc:Bounds>
+        <cmmndi:CMMNLabel></cmmndi:CMMNLabel>
+      </cmmndi:CMMNShape>
+      <cmmndi:CMMNShape id="CMMNShape_planItem5" cmmnElementRef="planItem5">
+        <dc:Bounds height="80.0" width="100.0" x="315.0" y="380.0"></dc:Bounds>
+        <cmmndi:CMMNLabel></cmmndi:CMMNLabel>
+      </cmmndi:CMMNShape>
+      <cmmndi:CMMNShape id="CMMNShape_exitCriterion4" cmmnElementRef="exitCriterion4">
+        <dc:Bounds height="28.0" width="18.0" x="306.0" y="406.0"></dc:Bounds>
+        <cmmndi:CMMNLabel></cmmndi:CMMNLabel>
+      </cmmndi:CMMNShape>
+      <cmmndi:CMMNShape id="CMMNShape_planItem8" cmmnElementRef="planItem8">
+        <dc:Bounds height="170.0" width="370.0" x="91.0" y="555.0"></dc:Bounds>
+        <cmmndi:CMMNLabel></cmmndi:CMMNLabel>
+      </cmmndi:CMMNShape>
+      <cmmndi:CMMNShape id="CMMNShape_entryCriterion2" cmmnElementRef="entryCriterion2">
+        <dc:Bounds height="28.0" width="18.0" x="267.0" y="541.0"></dc:Bounds>
+        <cmmndi:CMMNLabel></cmmndi:CMMNLabel>
+      </cmmndi:CMMNShape>
+      <cmmndi:CMMNShape id="CMMNShape_planItem7" cmmnElementRef="planItem7">
+        <dc:Bounds height="80.0" width="100.0" x="224.5" y="600.0"></dc:Bounds>
+        <cmmndi:CMMNLabel></cmmndi:CMMNLabel>
+      </cmmndi:CMMNShape>
+      <cmmndi:CMMNEdge id="CMMNEdge_connector1" cmmnElementRef="planItem3" targetCMMNElementRef="entryCriterion1">
+        <di:waypoint x="276.0" y="275.95"></di:waypoint>
+        <di:waypoint x="276.0" y="305.5"></di:waypoint>
+        <di:waypoint x="275.0" y="305.5"></di:waypoint>
+        <di:waypoint x="275.0" y="321.0"></di:waypoint>
+        <cmmndi:CMMNLabel></cmmndi:CMMNLabel>
+      </cmmndi:CMMNEdge>
+      <cmmndi:CMMNEdge id="CMMNEdge_connector2" cmmnElementRef="planItem6" targetCMMNElementRef="entryCriterion2">
+        <di:waypoint x="276.0" y="504.95000000000005"></di:waypoint>
+        <di:waypoint x="276.0" y="530.0"></di:waypoint>
+        <di:waypoint x="276.0" y="530.0"></di:waypoint>
+        <di:waypoint x="276.0" y="541.0"></di:waypoint>
+        <cmmndi:CMMNLabel></cmmndi:CMMNLabel>
+      </cmmndi:CMMNEdge>
+      <cmmndi:CMMNEdge id="CMMNEdge_connector3" cmmnElementRef="planItem2" targetCMMNElementRef="exitCriterion1">
+        <di:waypoint x="380.69699761801644" y="191.24186800495963"></di:waypoint>
+        <di:waypoint x="806.0032213439375" y="191.00498314430362"></di:waypoint>
+        <cmmndi:CMMNLabel></cmmndi:CMMNLabel>
+      </cmmndi:CMMNEdge>
+      <cmmndi:CMMNEdge id="CMMNEdge_connector6" cmmnElementRef="planItem4" targetCMMNElementRef="exitCriterion4">
+        <di:waypoint x="220.45" y="420.0"></di:waypoint>
+        <di:waypoint x="267.75" y="420.0"></di:waypoint>
+        <di:waypoint x="267.75" y="420.0"></di:waypoint>
+        <di:waypoint x="306.0" y="420.0"></di:waypoint>
+        <cmmndi:CMMNLabel></cmmndi:CMMNLabel>
+      </cmmndi:CMMNEdge>
+      <cmmndi:CMMNEdge id="CMMNEdge_connector7" cmmnElementRef="planItem5" targetCMMNElementRef="exitCriterion5">
+        <di:waypoint x="365.0" y="459.95000000000005"></di:waypoint>
+        <di:waypoint x="365.0" y="484.0"></di:waypoint>
+        <di:waypoint x="188.5" y="484.0"></di:waypoint>
+        <di:waypoint x="188.5" y="473.9171906812385"></di:waypoint>
+        <cmmndi:CMMNLabel></cmmndi:CMMNLabel>
+      </cmmndi:CMMNEdge>
+    </cmmndi:CMMNDiagram>
+  </cmmndi:CMMNDI>
+</definitions>

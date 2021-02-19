@@ -1,0 +1,78 @@
+<definitions xmlns="http://www.omg.org/spec/DMN/20180521/MODEL/" id="definition_DMN_MODEL-b71b10df-0e12-4041-b052-7962d495d18f" name="Credit Advice" namespace="http://www.flowable.org/dmn">
+  <decision id="flow_2ba3a26bd332" name="Credit Advice">
+    <decisionTable id="decisionTable_DMN_MODEL-650bd623-5240-4a17-b402-fea9e7a40c72" hitPolicy="FIRST">
+      <input label="Age">
+        <inputExpression id="inputExpression_inputExpression_1" typeRef="number">
+          <text>age</text>
+        </inputExpression>
+      </input>
+      <input label="Status">
+        <inputExpression id="inputExpression_inputExpression_3" typeRef="string">
+          <text>home</text>
+        </inputExpression>
+      </input>
+      <output id="outputExpression_outputExpression_2" label="Credit Guidance" name="guidance" typeRef="string"></output>
+      <output id="outputExpression_1" label="Default path" name="defaultPath" typeRef="string">
+        <outputValues>
+          <text>"accept","reject","escalate"</text>
+        </outputValues>
+      </output>
+      <rule>
+        <inputEntry id="inputEntry_inputExpression_1_1">
+          <text><![CDATA[< 24]]></text>
+        </inputEntry>
+        <inputEntry id="inputEntry_inputExpression_3_1">
+          <text><![CDATA[-]]></text>
+        </inputEntry>
+        <outputEntry id="outputEntry_outputExpression_2_1">
+          <text><![CDATA["Young, so need further checks"]]></text>
+        </outputEntry>
+        <outputEntry id="outputEntry_1_1">
+          <text><![CDATA["reject"]]></text>
+        </outputEntry>
+      </rule>
+      <rule>
+        <inputEntry id="inputEntry_inputExpression_1_2">
+          <text><![CDATA[-]]></text>
+        </inputEntry>
+        <inputEntry id="inputEntry_inputExpression_3_2">
+          <text><![CDATA[== "rented"]]></text>
+        </inputEntry>
+        <outputEntry id="outputEntry_outputExpression_2_2">
+          <text><![CDATA["No collateral, so consider viability"]]></text>
+        </outputEntry>
+        <outputEntry id="outputEntry_1_2">
+          <text><![CDATA["reject"]]></text>
+        </outputEntry>
+      </rule>
+      <rule>
+        <inputEntry id="inputEntry_inputExpression_1_3">
+          <text><![CDATA[> 60]]></text>
+        </inputEntry>
+        <inputEntry id="inputEntry_inputExpression_3_3">
+          <text><![CDATA[== "mortgaged"]]></text>
+        </inputEntry>
+        <outputEntry id="outputEntry_outputExpression_2_3">
+          <text><![CDATA["Potentially overstretched debt to consider"]]></text>
+        </outputEntry>
+        <outputEntry id="outputEntry_1_3">
+          <text><![CDATA["escalate"]]></text>
+        </outputEntry>
+      </rule>
+      <rule>
+        <inputEntry id="inputEntry_inputExpression_1_4">
+          <text><![CDATA[-]]></text>
+        </inputEntry>
+        <inputEntry id="inputEntry_inputExpression_3_4">
+          <text><![CDATA[-]]></text>
+        </inputEntry>
+        <outputEntry id="outputEntry_outputExpression_2_4">
+          <text><![CDATA["No negative guidance"]]></text>
+        </outputEntry>
+        <outputEntry id="outputEntry_1_4">
+          <text><![CDATA["accept"]]></text>
+        </outputEntry>
+      </rule>
+    </decisionTable>
+  </decision>
+</definitions>

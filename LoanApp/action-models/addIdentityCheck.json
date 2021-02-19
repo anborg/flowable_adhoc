@@ -1,0 +1,1 @@
+{"id":"ACTION_MODEL-2ddf851b-2fb4-45e7-9298-f95269e067b7","name":"Add identity check","key":"addIdentityCheck","description":null,"editorJson":{"formKey":null,"botKey":"bpmn-inject-dynamic-subprocess-bot","signalName":"getAdditionalIdentification","icon":"zap","channels":["menu"],"scopeType":"task","ignoreConfirmationMessage":false,"global":true}}
